@@ -23,7 +23,7 @@ S <number_of_tasks> <pid> This instruction signals a sabotage by an impostor. Nu
 
 V <pid> <vote_evidence> This instruction signals a vote event by the the player: pid. This player will also obtain vote_evidence evidence because they look suspicious. The player with the most evidence will be kicked be an algorithm like the E event.
 
-G <pid1> <pid2> This instruction signals a Give Away Work event. The player with the most tasks will give the half of them (those with the minimum difficulty value) to the player with the less tasks.
+G This instruction signals a Give Away Work event. The player with the most tasks will give the half of them (those with the minimum difficulty value) to the player with the less tasks.
 
 F This instruction indicates the termination of the game. During this event if the impostors are more than the crewmates then the impostors win. If there are no impostors or the completed tasks list contains the number of the primary tasks then the crewmates win.
 
