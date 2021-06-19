@@ -1,5 +1,5 @@
 # Among_us_linked_lists
-This is a non virtual representation of the video game "Among us". This project uses data structures to store the players and the tasks and implements functions on them in specific time complexity. The project is splitted in two parts. The first part uses linked lists and stacks. Language: C
+This is a non virtual representation of the video game "Among us". This project uses data structures to store the players and the tasks and implements functions on them in specific time complexity. The project is splitted in two parts. The first part (this one) uses linked lists and stacks. Language: C
 
 In the game there are players and tasks. Players: The players can be either crewmates either impostors. The players are stored in an unsorted double circular linked list with sentinel node. Each player has 3 attributes: their id, their role(crewmate/impostor) and their evidence. They also have a task list for their tasks as far as they are crewmates. This list remain always sorted by the tasks difficulty.
 
