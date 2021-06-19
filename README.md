@@ -5,7 +5,9 @@ In the game there are players and tasks. Players: The players can be either crew
 
 Tasks: There are 3 types of tasks which are formed by their difficulty. Tasks of difficulty 1, tasks of difficulty 2 and tasks of difficulty 3. Before they are distributed to the players, the tasks are stored in a simple linked list (general task list) sorted by their difficulty
 
-When a task is implemented it is stored in a stack. For the program functionality there is a set of instructions: P <is_alien> This instruction signals the insertion of a new player with id=pid and with role=is_alien. Time complexity O(1)
+When a task is implemented it is stored in a stack. For the program functionality there is a set of instructions: 
+
+P <is_alien> This instruction signals the insertion of a new player with id=pid and with role=is_alien. Time complexity O(1)
 
 T This instruction signals the insertion of a new task with id=tid and difficulty=difficulty in the general task list. Time complexity (On)
 
