@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <stddef.h>
-
+#include <unistd.h>
 #include "among_us.h"
 
 #define BUFFER_SIZE 1024 /* Maximum length of a line in input file */
@@ -196,7 +196,7 @@ int main(int argc, char **argv)
 			sscanf(buff, "%c %d %d\n", &event, &number_of_tasks,&pid);
 			DPRINT("%c %d %d\n", event, number_of_tasks,pid);
 
-			if (sabbotage(pid,number_of_tasks))
+			if (sabbotage(number_of_tasks, pid))
 			{
 				DPRINT("%c %d %d succeeded\n", event,  number_of_tasks,pid);
 			}
@@ -350,6 +350,6 @@ int main(int argc, char **argv)
 		}
 	}
 
-	free_all();
+	//free_all();
 	return (EXIT_SUCCESS);
 }

@@ -66,7 +66,7 @@ int initialize() {
  */
 int register_player(int pid,int is_alien) {
     struct Players *new_player=(struct Players*)malloc(sizeof(struct Players));
-    struct Players *temp;
+
     if(new_player==NULL){
         return 0;
     }
@@ -110,6 +110,8 @@ int register_player(int pid,int is_alien) {
  */
 int insert_task(int tid,int difficulty){
     struct Tasks *new_task=(struct Tasks*)malloc(sizeof(struct Tasks));
+    struct Tasks *temp, *prev;
+
     if(new_task==NULL)
         return 0;
     if(tid<0){
@@ -118,7 +120,6 @@ int insert_task(int tid,int difficulty){
     if(difficulty>3 || difficulty<1){
         return 0;
     }
-    struct Tasks *temp, *prev;
     tasks_head->tasks_count[difficulty-1]++;
     new_task->tid=tid;
     new_task->difficulty=difficulty;
@@ -148,12 +149,14 @@ int insert_task(int tid,int difficulty){
  *         0 on failure
  */
 int distribute_tasks(void) {
+    struct Players *players_temp, *temp;
+    struct Tasks *tasks_temp, *new_node;
+    
     if(Total_Tasks==0)      //no tasks
         return 0;
     if(players_head->next==players_head)        //no players
         return 0;
-    struct Players *players_temp, *temp;
-    struct Tasks *tasks_temp, *new_node;
+    
     players_temp=players_head->next;
     tasks_temp=tasks_head->head;
     while(tasks_temp!=NULL){
@@ -212,20 +215,23 @@ struct Tasks* new(void){            //MY FUNTION
  *         0 on failure
  */
 int implement_task(int pid, int difficulty){
+    struct Players *player;
+    struct Tasks *temp, *prev=NULL;
+    int found=0;
+
     if(pid<0)
         return 0;
     if(difficulty>3 || difficulty<1)
         return 0;
     //SEARCH THE PLAYER WITH PID
-    struct Players *player;
+    
     player=find_player_with_pid(pid);
     if(!player)
         return 0;   //THERE IS NO PLAYER WITH PID OR THERE ARE NOT PLAYERS IN THE LIST
     if(player->tasks_head==player->tasks_sentinel)
         return 0;    //THIS PLAYER HAS NO TASKS. IS AN ALLIEN OR HAS COMPLETED ALL THE TASKS
     //FIND THE TASK
-    struct Tasks *temp, *prev=NULL;
-    int found=0;
+    
     temp=player->tasks_head;
     //FROM THE PREVIOUS CHECK THOIS PLAYER HAS AT LEAST ONE TASK
     do{
@@ -246,6 +252,7 @@ int implement_task(int pid, int difficulty){
         else
             player->tasks_sentinel->next=prev;
     }
+    temp->next=NULL;
     push(temp);
     //printf("TASK %d COMPLETED!\n", temp->tid);
     print_double_list();
@@ -545,15 +552,18 @@ int print_evidence_and_tasks(void){
  *         0 on failure
  */
 int sabbotage(int number_of_tasks, int pid){
-    if(pid<0)
+    if(pid<0){
         return 0;       // invalid pid
-    if(number_of_tasks>tasks_stack->count || number_of_tasks<0)
+    }
+    if(number_of_tasks>tasks_stack->count || number_of_tasks<0){
         return 0;       //invalid number of tasks
+    }
     struct Players *temp, *player=find_player_with_pid(pid);
     struct Tasks *task_temp, *popped_task, *prev;
     int i;
-    if(!player)
+    if(!player){
         return 0;    //THERE IS NO PLAYER WITH PID OR THERE ARE NO PLAYERS IN THE LIST
+    }
     //GO TO THE TARGET PLAYER
     for(i=0; i<number_of_tasks/2; i++)
         player=player->prev;
@@ -565,15 +575,18 @@ int sabbotage(int number_of_tasks, int pid){
                 break;
             temp=temp->next;
         }
-        if(temp==player)
+        if(temp==player){
             return 0;    //ALL PLAYERS ARE ALIENS
+        }
         player=temp;
     }
     //START WITH THE PLAYER AT THE ADRRESS player WHO IS NOT ALIEN BECAUSE OF THE CODE ABOVE!
     for(i=0; i<number_of_tasks; i++){
         popped_task=pop();
-        if(popped_task==NULL)   //POP FAILED
+        if(popped_task==NULL){   //POP FAILED
+        printf("^^^^^^^^^^^^^^^^^^^^^^^^^pop failed\n");
             return 0;
+        }
         while(player->is_alien==1 || player==players_head)  //FIND THE NEXT NON ALIEN OR HEAD PLAYER
             player=player->next;
         task_temp=player->tasks_head;
@@ -649,18 +662,20 @@ int give_work(void){
     int number_of_max, number_of_min, i;      //the number of max-min tasks
     struct Players *min_tasks_player=find_min_tasks_player(&number_of_min);
     struct Players *max_tasks_player=find_max_tasks_player(&number_of_max);
-    if(!max_tasks_player || !min_tasks_player || min_tasks_player==max_tasks_player)
-        return 0;           //find min/max failed or there is only one crewmate
-    if(number_of_max==number_of_min)
-        return 0;    //same number of tasks
     struct Tasks *tasks_temp, *last_task, *temp1, *temp2, *prev, *task_after_temp, *sentinel1, *sentinel2;
+
+    if(!max_tasks_player || !min_tasks_player || min_tasks_player==max_tasks_player){
+        return 0;           //find min/max failed or there is only one crewmate
+    }
+    if(number_of_max==number_of_min){
+        return 0;    //same number of tasks
+    }
     for(i=0; i<number_of_max/2; i++){
         if(i==0)
             tasks_temp=max_tasks_player->tasks_head;
         else
             tasks_temp=tasks_temp->next;
     }
-
     last_task=max_tasks_player->tasks_sentinel->next;
     task_after_temp=tasks_temp->next;
     tasks_temp->next=max_tasks_player->tasks_sentinel;
@@ -697,8 +712,10 @@ int give_work(void){
             sentinel1->next->next=sentinel2;
         }
     }
+    
     max_tasks_player->tasks_head=task_after_temp;
     sentinel1->next=last_task;
+
     print_double_list();
     return 1;
 }
@@ -810,7 +827,7 @@ int print_stack(void){
  *         0 on failure
  */
 int print_double_list(void){
-     if(players_head->next==players_head)
+    if(players_head->next==players_head)
         return 0;   //no players
     struct Tasks *tasks_temp;
     struct Players *players_temp;
@@ -857,11 +874,9 @@ int free_all(void){
     tasks_temp=tasks_head->head;
     while(tasks_temp!=NULL){
         next_t=tasks_temp->next;
-        if(tasks_temp)
-            free(tasks_temp);
+        free(tasks_temp);
         tasks_temp=next_t;
     }
-    free(tasks_head->head);
     free(tasks_head);
     printf("tasks deleted!\n");
     //free players
